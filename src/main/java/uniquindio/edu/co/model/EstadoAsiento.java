@@ -1,4 +1,6 @@
 package uniquindio.edu.co.model;
 
-public class EstadoAsiento {
+public enum EstadoAsiento {
+    DISPONIBLE,
+    OCUPADO
 }
