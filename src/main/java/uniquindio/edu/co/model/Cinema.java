@@ -3,6 +3,7 @@ package uniquindio.edu.co.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Cinema implements Buscable, Consultable {
 
@@ -279,7 +280,7 @@ public class Cinema implements Buscable, Consultable {
 
         List<DetalleVenta> detalles = new ArrayList<>();
 
-        // 1. Validar primero que TODOS los asientos existan y estén libres antes de ocupar ninguno
+        // Valida primero que TODOS los asientos existan y estén libres antes de ocupar
         for (Map.Entry<String, TipoCliente> entrada : asientosYTipos.entrySet()) {
             String codAsiento = entrada.getKey();
             TipoCliente tipo = entrada.getValue();
@@ -294,7 +295,7 @@ public class Cinema implements Buscable, Consultable {
             detalles.add(new DetalleVenta(asiento, tipo, funcion.getValorBase()));
         }
 
-        // 2. Si todos son válidos, ocuparlos todos
+        // Si todos son válidos, ocuparlos todos
         for (DetalleVenta d : detalles) {
             d.getAsiento().ocupar();
         }
@@ -318,7 +319,6 @@ public class Cinema implements Buscable, Consultable {
             throw new Exception("La venta ya fue cancelada previamente.");
         }
         venta.cancelar();
-        venta.getAsiento().liberar();
     }
     // Metodos de Clientes
     public void registrarCliente(Cliente cliente) throws Exception {
