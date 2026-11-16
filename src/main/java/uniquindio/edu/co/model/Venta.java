@@ -49,7 +49,7 @@ public class Venta {
         return detalles.size();
     }
 
-    // --- Getters y Setters ---
+
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
     public Cliente getCliente() { return cliente; }
