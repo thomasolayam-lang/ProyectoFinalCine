@@ -64,12 +64,12 @@ public class Venta {
 
     @Override
     public String toString() {
-        return "Venta{" +
-                "codigo:'" + codigo + '\'' +
-                ", cliente:" + cliente.getNombre() +
-                ", funcion:" + funcion.getCodigo() +
-                ", entradas:" + detalles +
-                ", valorTotalPagado:" + valorTotalPagado +
-                ", estado:" + estado;
+        return "Venta:\n" +
+                "codigo:" + codigo+"\n"+
+                " cliente:" + cliente.getNombre()+"\n" +
+                " funcion:" + funcion.getCodigo()+"\n" +
+                " entradas:" + detalles+"\n"+
+                " valor Total Pagado:" + valorTotalPagado +"\n"+
+                " estado:" + estado;
     }
 }
