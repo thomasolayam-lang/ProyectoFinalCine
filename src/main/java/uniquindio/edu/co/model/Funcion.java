@@ -2,6 +2,7 @@ package uniquindio.edu.co.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Funcion {
@@ -14,15 +15,18 @@ public class Funcion {
     private EstadoFuncion estado;
     private List<Asiento> asientos;
 
-    public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, EstadoFuncion estado, List<Asiento> asientos) {
+    public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase, EstadoFuncion estado) {
         this.codigo = codigo;
         this.pelicula = pelicula;
         this.sala = sala;
         this.fecha = fecha;
         this.hora = hora;
+        this.valorBase = valorBase;
         this.estado = estado;
-        this.asientos = asientos;
+        this.asientos = new ArrayList<>();
+        copiarAsientosDeSala(sala);
     }
+
 
     public String getCodigo() {
         return codigo;
@@ -91,16 +95,17 @@ public class Funcion {
     @Override
     public String toString() {
         return "Funcion{" +
-                "asientos=" + asientos +
-                ", codigo='" + codigo + '\'' +
-                ", pelicula=" + pelicula +
-                ", sala=" + sala +
+                "codigo='" + codigo + '\'' +
+                ", pelicula=" + (pelicula != null ? pelicula.getNombre() : "N/A") +
+                ", sala=" + (sala != null ? sala.getNombre() : "N/A") +
                 ", fecha=" + fecha +
                 ", hora=" + hora +
                 ", valorBase=" + valorBase +
                 ", estado=" + estado +
+                ", disponibles=" + contarDisponibles() + "/" + asientos.size() +
                 '}';
     }
+
     private void copiarAsientosDeSala(Sala sala) {
         if (sala != null && sala.getAsientos() != null) {
             for (Asiento a : sala.getAsientos()) {
@@ -108,6 +113,7 @@ public class Funcion {
             }
         }
     }
+
     public Asiento buscarAsiento(String codigoAsiento) {
         for (Asiento a : asientos) {
             if (a.getCodigo().equalsIgnoreCase(codigoAsiento)) {
@@ -116,6 +122,7 @@ public class Funcion {
         }
         return null;
     }
+
     public int contarDisponibles() {
         int contador = 0;
         for (Asiento a : asientos) {
@@ -125,10 +132,12 @@ public class Funcion {
         }
         return contador;
     }
+
     public int contarOcupados() {
         return asientos.size() - contarDisponibles();
     }
-    public void cancelar(){
-        this.estado= EstadoFuncion.CANCELADA;
+
+    public void cancelar() {
+        this.estado = EstadoFuncion.CANCELADA;
     }
 }
