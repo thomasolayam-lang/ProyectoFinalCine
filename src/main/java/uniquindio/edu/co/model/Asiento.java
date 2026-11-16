@@ -3,12 +3,12 @@ package uniquindio.edu.co.model;
 public class Asiento {
 
     private String codigo;
-    private Character fila;
+    private char fila;
     private int numero;
     private EstadoAsiento estado;
 
 
-    public Asiento(String codigo, Character fila, int numero, EstadoAsiento estado) {
+    public Asiento(String codigo, char fila, int numero, EstadoAsiento estado) {
         this.codigo = codigo;
         this.fila = fila;
         this.numero = numero;
@@ -54,5 +54,14 @@ public class Asiento {
                 ", fila:" + fila +
                 ", numero:" + numero +
                 ", estado:" + estado;
+    }
+    public void ocupar(){
+        this.estado = EstadoAsiento.OCUPADO;
+    }
+    public void liberar() {
+        this.estado = EstadoAsiento.DISPONIBLE;
+    }
+    public boolean estaDisponible(){
+        return this.estado == EstadoAsiento.DISPONIBLE;
     }
 }
