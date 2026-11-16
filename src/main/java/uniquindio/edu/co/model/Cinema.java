@@ -3,7 +3,7 @@ package uniquindio.edu.co.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cinema {
+public class Cinema implements Buscable, Consultable {
 
     private String nombre;
 
@@ -70,5 +70,25 @@ public class Cinema {
 
     public void setVentas(List<Venta> ventas) {
         this.ventas = ventas;
+    }
+
+    @Override
+    public Object buscarPorCodigo(String codigo) {
+        return null;
+    }
+
+    @Override
+    public List<Funcion> consultarFuncionesPorPelicula(String codigoPelicula) {
+        return List.of();
+    }
+
+    @Override
+    public List<Venta> consultarVentasPorCliente(String cedulaCliente) {
+        return List.of();
+    }
+
+    @Override
+    public int consultarAsientosDisponiblesEnFuncion(String codigoFuncion) {
+        return 0;
     }
 }
