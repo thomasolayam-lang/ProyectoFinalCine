@@ -79,13 +79,12 @@ public class Cinema implements Buscable, Consultable {
     @Override
     public String toString() {
         return "Cinema{" +
-                "nombre='" + nombre + '\'' +
-                ", peliculas=" + peliculas +
-                ", salas=" + salas +
-                ", funciones=" + funciones +
-                ", clientes=" + clientes +
-                ", ventas=" + ventas +
-                '}';
+                "nombre:'" + nombre + '\'' +
+                ", peliculas:" + peliculas +
+                ", salas:" + salas +
+                ", funciones:" + funciones +
+                ", clientes:" + clientes +
+                ", ventas:" + ventas;
     }
 
     //METODOS
