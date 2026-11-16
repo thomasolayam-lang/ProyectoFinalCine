@@ -265,7 +265,7 @@ public class Cinema implements Buscable, Consultable {
 
 
     // Metodos de Ventas
-    public Venta venderEntrada(String codigoFuncion, Cliente cliente, TipoCliente tipo, String codAsiento) throws Exception {
+    public Venta venderEntradas(String codigoFuncion, Cliente cliente, Map<String, TipoCliente> asientosYTipos) throws Exception {
         Funcion funcion = buscarFuncion(codigoFuncion);
         if (funcion == null) {
             throw new Exception("Función no encontrada.");
@@ -273,22 +273,38 @@ public class Cinema implements Buscable, Consultable {
         if (funcion.getEstado() != EstadoFuncion.PROGRAMADA) {
             throw new Exception("La función no está programada para venta.");
         }
-        Asiento asiento = funcion.buscarAsiento(codAsiento);
-        if (asiento == null) {
-            throw new Exception("El asiento " + codAsiento + " no existe en esta función.");
+        if (asientosYTipos == null || asientosYTipos.isEmpty()) {
+            throw new Exception("Debe seleccionar al menos un asiento.");
         }
-        if (!asiento.estaDisponible()) {
-            throw new Exception("El asiento " + codAsiento + " ya está ocupado.");
+
+        List<DetalleVenta> detalles = new ArrayList<>();
+
+        // 1. Validar primero que TODOS los asientos existan y estén libres antes de ocupar ninguno
+        for (Map.Entry<String, TipoCliente> entrada : asientosYTipos.entrySet()) {
+            String codAsiento = entrada.getKey();
+            TipoCliente tipo = entrada.getValue();
+
+            Asiento asiento = funcion.buscarAsiento(codAsiento);
+            if (asiento == null) {
+                throw new Exception("El asiento " + codAsiento + " no existe en esta función.");
+            }
+            if (!asiento.estaDisponible()) {
+                throw new Exception("El asiento " + codAsiento + " ya está ocupado. Venta abortada.");
+            }
+            detalles.add(new DetalleVenta(asiento, tipo, funcion.getValorBase()));
+        }
+
+        // 2. Si todos son válidos, ocuparlos todos
+        for (DetalleVenta d : detalles) {
+            d.getAsiento().ocupar();
         }
 
         if (buscarCliente(cliente.getIdentificacion()) == null) {
             clientes.add(cliente);
         }
 
-        asiento.ocupar();
-        double valorPagado = tipo.calcularTarifa(funcion.getValorBase());
         String codigoVenta = "V-" + (ventas.size() + 1);
-        Venta venta = new Venta(codigoVenta, cliente, funcion, asiento, tipo, LocalDateTime.now(), valorPagado, EstadoVenta.ACTIVA);
+        Venta venta = new Venta(codigoVenta, cliente, funcion, detalles);
         ventas.add(venta);
         return venta;
     }
@@ -312,6 +328,32 @@ public class Cinema implements Buscable, Consultable {
         clientes.add(cliente);
     }
 
+    //actializacion de asientos
+    public String obtenerMapaAsientos(String codigoFuncion) throws Exception {
+        Funcion funcion = buscarFuncion(codigoFuncion);
+        if (funcion == null) {
+            throw new Exception("Función no encontrada.");
+        }
+
+        StringBuilder mapa = new StringBuilder();
+        mapa.append("=== MAPA DE ASIENTOS - FUNCIÓN ").append(funcion.getCodigo()).append(" ===\n");
+
+        String filaActual = "";
+        for (Asiento a : funcion.getAsientos()) {
+            // Suponiendo que el código es tipo "A1", "B2", extraemos la letra de la fila
+            String fila = a.getCodigo().substring(0, 1);
+            if (!fila.equals(filaActual)) {
+                filaActual = fila;
+                mapa.append("\nFila ").append(filaActual).append(": ");
+            }
+            if (a.estaDisponible()) {
+                mapa.append("[").append(a.getCodigo()).append("] ");
+            } else {
+                mapa.append("[ XX ] ");
+            }
+        }
+        return mapa.toString();
+    }
     // Métodos de Búsqueda
     public Pelicula buscarPelicula(String codigo) {
         for (Pelicula p : peliculas) {
@@ -363,8 +405,8 @@ public class Cinema implements Buscable, Consultable {
     public int totalEntradasVendidas() {
         int total = 0;
         for (Venta v : ventas) {
-            if (v.getEstado() == EstadoVenta.ACTIVA) {
-                total++;
+            if (v.estaActiva()) {
+                total += v.getCantidadEntradas();
             }
         }
         return total;
@@ -373,8 +415,8 @@ public class Cinema implements Buscable, Consultable {
     public double totalIngresos() {
         double total = 0;
         for (Venta v : ventas) {
-            if (v.getEstado() == EstadoVenta.ACTIVA) {
-                total += v.getValorPagado();
+            if (v.estaActiva()) {
+                total += v.getValorTotalPagado();
             }
         }
         return total;
@@ -382,18 +424,17 @@ public class Cinema implements Buscable, Consultable {
 
     public Pelicula peliculaMasVendida() {
         Pelicula masVendida = null;
-        int maxVentas = 0;
+        int maxBoletas = 0;
 
         for (Pelicula p : peliculas) {
-            int contador = 0;
+            int contadorBoletas = 0;
             for (Venta v : ventas) {
-                if (v.getEstado() == EstadoVenta.ACTIVA &&
-                        v.getFuncion().getPelicula().getCodigo().equals(p.getCodigo())) {
-                    contador++;
+                if (v.estaActiva() && v.getFuncion().getPelicula().getCodigo().equals(p.getCodigo())) {
+                    contadorBoletas += v.getCantidadEntradas();
                 }
             }
-            if (contador > maxVentas) {
-                maxVentas = contador;
+            if (contadorBoletas > maxBoletas) {
+                maxBoletas = contadorBoletas;
                 masVendida = p;
             }
         }
