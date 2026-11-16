@@ -8,16 +8,18 @@ public class Venta {
         private Funcion funcion;
         private Asiento asiento;
         private TipoCliente tipoEntrada;
-        private LocalDateTime fechaHora;
+        private LocalDateTime fechaHora;0
         private double valorPagado;
         private EstadoVenta estado;
 
-        public Venta(String codigo, Cliente cliente, Funcion funcion, Asiento asiento, TipoCliente tipoEntrada, double valorPagado, EstadoVenta estado) {
+
+    public Venta(String codigo, Cliente cliente, Funcion funcion, Asiento asiento, TipoCliente tipoEntrada, LocalDateTime fechaHora, double valorPagado, EstadoVenta estado) {
             this.codigo = codigo;
             this.cliente = cliente;
             this.funcion = funcion;
             this.asiento = asiento;
             this.tipoEntrada = tipoEntrada;
+        this.fechaHora = fechaHora;
             this.valorPagado = valorPagado;
             this.fechaHora = LocalDateTime.now();
             this.estado = estado;

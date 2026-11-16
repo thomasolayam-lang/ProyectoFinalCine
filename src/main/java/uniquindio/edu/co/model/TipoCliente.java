@@ -1,18 +1,18 @@
 package uniquindio.edu.co.model;
 
 public enum TipoCliente {
-    GENERAL(100),
-    ESTUDIANTE(80),
-    NINO(73),
-    ADULTO_MAYOR(76);
+    GENERAL(1.0),
+    ESTUDIANTE(0.8),
+    NINO(0.7),
+    ADULTO_MAYOR(0.75);
 
-    private final int porcentajeTarifa;
+    private final double porcentajeTarifa;
 
-    TipoCliente(int porcentajeTarifa) {
+    TipoCliente(double porcentajeTarifa) {
         this.porcentajeTarifa = porcentajeTarifa;
     }
 
-    public int getPorcentajeTarifa() {
-        return porcentajeTarifa;
+    public double calcularTarifa(double valorBase) {
+        return valorBase * porcentajeTarifa;
     }
 }
