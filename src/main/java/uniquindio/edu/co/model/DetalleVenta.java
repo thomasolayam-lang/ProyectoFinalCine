@@ -2,12 +2,12 @@ package uniquindio.edu.co.model;
 
 public class DetalleVenta {
     private Asiento asiento;
-    private TipoCliente tipoEntrada;
+    private TipoCliente tipoCliente;
     private double valor;
 
     public DetalleVenta(Asiento asiento, TipoCliente tipoEntrada, double valorBaseFuncion) {
         this.asiento = asiento;
-        this.tipoEntrada = tipoEntrada;
+        this.tipoCliente = tipoCliente;
         this.valor = tipoEntrada.calcularTarifa(valorBaseFuncion);
     }
 
@@ -16,7 +16,7 @@ public class DetalleVenta {
     }
 
     public TipoCliente getTipoEntrada() {
-        return tipoEntrada;
+        return tipoCliente;
     }
 
     public double getValor() {
@@ -25,6 +25,6 @@ public class DetalleVenta {
 
     @Override
     public String toString() {
-        return "Asiento: " + asiento.getCodigo() + " (" + tipoEntrada + ") - $" + valor;
+        return "Asiento: " + asiento.getCodigo() + " (" + tipoCliente + ") - $" + valor;
     }
 }
